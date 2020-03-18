@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "nn-game-guid"
+    "default": "nn-game-guid",
+    "functions": "nn-game-guid"
   }
 }

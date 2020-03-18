@@ -1,54 +1,59 @@
-// Guide QuerySelector
+// DOM elements
 const guideList = document.querySelector(".guides");
 const loggedOutLinks = document.querySelectorAll(".logged-out");
 const loggedInLinks = document.querySelectorAll(".logged-in");
 const accountDetails = document.querySelector(".account-details");
+const adminItem = document.querySelectorAll(".admin");
 
 const setupUI = user => {
   if (user) {
-    // Account Info
+    if (user.admin) {
+      adminItem.forEach(item => (item.style.display = "block"));
+    }
+
+    // account info
     db.collection("users")
       .doc(user.uid)
       .get()
       .then(doc => {
         const html = `
-          <div>Logged in as ${user.email}</div>
-          <div>${doc.data().bio}</div>
-        `;
+        <div>Logged in as ${user.email}</div>
+        <div>${doc.data().bio}</div>
+        <div class="pink-text">${user.admin ? 'Admin' : ''}</div>
+      `;
         accountDetails.innerHTML = html;
       });
-
-    //Header Links
+    // toggle user UI elements
     loggedInLinks.forEach(item => (item.style.display = "block"));
     loggedOutLinks.forEach(item => (item.style.display = "none"));
   } else {
-    accountDetails.innerHTML = "";
+    adminItem.forEach(item => (item.style.display = "none"));
 
-    // Header Links
+    // clear account info
+    accountDetails.innerHTML = "";
+    // toggle user elements
     loggedInLinks.forEach(item => (item.style.display = "none"));
     loggedOutLinks.forEach(item => (item.style.display = "block"));
   }
 };
 
+// setup guides
 const setupGuides = data => {
   if (data.length) {
     let html = "";
     data.forEach(doc => {
       const guide = doc.data();
-      // console.log(guide);
       const li = `
-    <li>
-      <div class="collapsible-header grey lighten-4">${guide.title}</div>
-      <div class="collapsible-body white">${guide.content}</div>
-    </li>
-    `;
+        <li>
+          <div class="collapsible-header grey lighten-4"> ${guide.title} </div>
+          <div class="collapsible-body white"> ${guide.content} </div>
+        </li>
+      `;
       html += li;
-      // console.log(html);
     });
     guideList.innerHTML = html;
   } else {
-    guideList.innerHTML =
-      '<h5 class="center-align"> Login to view guides </h5>';
+    guideList.innerHTML = '<h5 class="center-align">Login to view guides</h5>';
   }
 };
 
