@@ -3,6 +3,11 @@ const admin = require("firebase-admin");
 admin.initializeApp(functions.config().firebase);
 
 exports.addAdminRole = functions.https.onCall((data, context) => {
+  
+  if (context.auth.token.admin !== true) {
+    return { error: "only admin can add other admin, sucker" };
+  }
+
   // get user and add admin custom claim
   return admin
     .auth()
